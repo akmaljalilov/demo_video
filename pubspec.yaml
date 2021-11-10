@@ -1,4 +1,4 @@
-name: chewie_example
+name: demo_video
 description: An example of how to use the chewie for Flutter
 version: 1.0.0
 publish_to: none
@@ -7,8 +7,8 @@ environment:
   sdk: '>=2.12.0-0 <3.0.0'
 
 dependencies:
-  chewie:
-    path: ../
+  chewie: ^1.2.2
+  font_awesome_flutter: ^9.2.0
   flutter:
     sdk: flutter
 

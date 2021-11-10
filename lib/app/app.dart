@@ -2,6 +2,7 @@ import 'package:chewie/chewie.dart';
 import 'package:chewie_example/app/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:video_player/video_player.dart';
 
 class ChewieDemo extends StatefulWidget {
@@ -111,15 +112,19 @@ class _ChewieDemoState extends State<ChewieDemo> {
                             children: [
                               IconButton(
                                 onPressed: () {},
-                                icon: const Icon(Icons.comment),
+                                icon: const Icon(Icons.thumb_up),
                               ),
                               IconButton(
                                 onPressed: () {},
-                                icon: const Icon(Icons.favorite),
+                                icon: const Icon(Icons.thumb_down),
                               ),
                               IconButton(
                                 onPressed: () {},
-                                icon: const Icon(Icons.share),
+                                icon: const FaIcon(FontAwesomeIcons.comment),
+                              ),
+                              IconButton(
+                                onPressed: () {},
+                                icon: const FaIcon(FontAwesomeIcons.share),
                               ),
                             ],
                           ),
