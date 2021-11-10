@@ -1,9 +1,10 @@
 import 'package:chewie/chewie.dart';
-import 'package:chewie_example/app/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:video_player/video_player.dart';
+
+import 'theme.dart';
 
 class ChewieDemo extends StatefulWidget {
   const ChewieDemo({
@@ -46,25 +47,6 @@ class _ChewieDemoState extends State<ChewieDemo> {
   }
 
   void _createChewieController() {
-    final subtitles = [
-      Subtitle(
-        index: 0,
-        start: Duration.zero,
-        end: const Duration(seconds: 10),
-        text: const TextSpan(children: [
-          TextSpan(
-            text: 'Hello',
-            style: TextStyle(color: Colors.red, fontSize: 22),
-          )
-        ]),
-      ),
-      Subtitle(
-          index: 0,
-          start: const Duration(seconds: 10),
-          end: const Duration(seconds: 20),
-          text: 'Whats up? :)'),
-    ];
-
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController2,
       autoPlay: true,
@@ -80,6 +62,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: widget.title,
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.light.copyWith(
         platform: _platform ?? Theme.of(context).platform,
       ),
@@ -88,7 +71,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
           children: <Widget>[
             Expanded(
               child: GestureDetector(
-                child: Column(
+                child: Stack(
                   children: [
                     if (_chewieController != null &&
                         _chewieController!
@@ -106,28 +89,18 @@ class _ChewieDemoState extends State<ChewieDemo> {
                         ],
                       ),
                     Positioned(
+                      right: 10,
+                      bottom: 10,
                       child: Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.thumb_up),
-                              ),
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.thumb_down),
-                              ),
-                              IconButton(
-                                onPressed: () {},
-                                icon: const FaIcon(FontAwesomeIcons.comment),
-                              ),
-                              IconButton(
-                                onPressed: () {},
-                                icon: const FaIcon(FontAwesomeIcons.share),
-                              ),
-                            ],
-                          ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            action(icon: Icon(Icons.thumb_up),),
+                            action(icon: Icon(Icons.thumb_down),),
+                            action(icon: FaIcon(FontAwesomeIcons.comment),),
+                            action(icon: FaIcon(FontAwesomeIcons.share),),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -137,6 +110,28 @@ class _ChewieDemoState extends State<ChewieDemo> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class action extends StatelessWidget {
+  final icon;
+  const action({
+    Key? key,
+    this.icon
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        IconButton(
+          onPressed: () {},
+          color: Colors.white,
+          icon: this.icon,
+        ),
+        Text("0", style: TextStyle(color: Colors.white),)
+      ],
     );
   }
 }
