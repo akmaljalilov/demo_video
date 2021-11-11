@@ -20,42 +20,60 @@ class ChewieDemo extends StatefulWidget {
   }
 }
 
+class Video {
+  VideoPlayerController controller;
+  int likes = 0;
+  int disLikes = 0;
+  int comments = 0;
+
+  Video(this.controller) {}
+}
+
 class _ChewieDemoState extends State<ChewieDemo> {
   TargetPlatform? _platform;
-  late VideoPlayerController _videoPlayerController2;
+
   ChewieController? _chewieController;
+
+  List<Video> videos = <Video>[
+    Video(VideoPlayerController.network("http://192.168.1.21:8081/a.mp4")),
+    Video(VideoPlayerController.network("http://192.168.1.21:8081/b.mp4"))
+  ];
+
+  int index = -1;
 
   @override
   void initState() {
     super.initState();
-    initializePlayer();
+    init();
+    _next();
+  }
+
+  Future<void> init() async {
+    await Future.wait([
+      this.videos[0].controller.initialize(),
+      this.videos[1].controller.initialize()
+    ]);
+
   }
 
   @override
   void dispose() {
-    _videoPlayerController2.dispose();
     _chewieController?.dispose();
     super.dispose();
   }
 
-  Future<void> initializePlayer() async {
-    _videoPlayerController2 =
-        VideoPlayerController.network('http://192.168.1.21:8081/a.mp4');
-    await Future.wait([_videoPlayerController2.initialize()]);
-    _createChewieController();
-    setState(() {});
-  }
-
-  void _createChewieController() {
+  Future<void> _next() async {
+    this.index++;
+    this.index = this.index % 2;
     _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController2,
+      videoPlayerController: this.videos[this.index].controller,
       autoPlay: true,
       looping: true,
       showOptions: false,
       showControls: false,
       allowMuting: false,
-      fullScreenByDefault: true,
     );
+    setState(() {});
   }
 
   @override
@@ -71,13 +89,22 @@ class _ChewieDemoState extends State<ChewieDemo> {
           children: <Widget>[
             Expanded(
               child: GestureDetector(
-                child: Stack(
+                child: Column(
                   children: [
                     if (_chewieController != null &&
                         _chewieController!
                             .videoPlayerController.value.isInitialized)
-                      Chewie(
-                        controller: _chewieController!,
+                      Stack(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _next();
+                            },
+                            child: Chewie(
+                              controller: _chewieController!,
+                            ),
+                          ),
+                        ],
                       )
                     else
                       Column(
@@ -88,26 +115,43 @@ class _ChewieDemoState extends State<ChewieDemo> {
                           Text('Loading'),
                         ],
                       ),
-                    Positioned(
-                      right: 10,
-                      bottom: 10,
-                      child: Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            action(icon: Icon(Icons.thumb_up),),
-                            action(icon: Icon(Icons.thumb_down),),
-                            action(icon: FaIcon(FontAwesomeIcons.comment),),
-                            action(icon: FaIcon(FontAwesomeIcons.share),),
-                          ],
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
             ),
           ],
+        ),
+        floatingActionButton: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              action(
+                count: this.videos[this.index].likes,
+                callFunc: () {
+                  setState(() {
+                    this.videos[this.index].likes++;
+                  });
+                },
+                icon: Icon(Icons.thumb_up),
+              ),
+              action(
+                count: this.videos[this.index].disLikes,
+                callFunc: () {
+                  setState(() {
+                    this.videos[this.index].disLikes++;
+                  });
+                },
+                icon: Icon(Icons.thumb_down),
+              ),
+              action(
+                count: 10,
+                icon: FaIcon(FontAwesomeIcons.comment),
+              ),
+              action(
+                icon: FaIcon(FontAwesomeIcons.share),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -116,21 +160,26 @@ class _ChewieDemoState extends State<ChewieDemo> {
 
 class action extends StatelessWidget {
   final icon;
-  const action({
-    Key? key,
-    this.icon
-  }) : super(key: key);
+  final count;
+  final callFunc;
+
+  const action({Key? key, this.count, this.icon, this.callFunc})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         IconButton(
-          onPressed: () {},
+          onPressed: this.callFunc,
           color: Colors.white,
           icon: this.icon,
         ),
-        Text("0", style: TextStyle(color: Colors.white),)
+        if (this.count != null)
+          Text(
+            this.count.toString(),
+            style: TextStyle(color: Colors.white),
+          )
       ],
     );
   }
