@@ -35,8 +35,8 @@ class _ChewieDemoState extends State<ChewieDemo> {
   ChewieController? _chewieController;
 
   List<Video> videos = <Video>[
-    Video(VideoPlayerController.network("http://192.168.1.21:8081/a.mp4")),
-    Video(VideoPlayerController.network("http://192.168.1.21:8081/b.mp4"))
+    Video(VideoPlayerController.network("https://firebasestorage.googleapis.com/v0/b/navin-56e04.appspot.com/o/a.mp4?alt=media&token=38b85337-723c-4fbd-90c7-9a91ee847341")),
+    Video(VideoPlayerController.network("https://firebasestorage.googleapis.com/v0/b/navin-56e04.appspot.com/o/b.mp4?alt=media&token=1d7440e2-fb4e-44da-baec-51703e328ccc"))
   ];
 
   int index = -1;
